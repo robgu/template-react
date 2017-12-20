@@ -11,6 +11,15 @@
     "type": "git",
     "url": "git@github.com:tech-demo/react-redux.git"
   },
+  "keywords": [
+    "react",
+    "redux",
+    "less",
+    "webpack",
+    "antd",
+    "eslint",
+    "stylelint"
+  ],
   "importSort": {
     ".js": {
       "parser": "babylon",
