@@ -1,8 +1,17 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
-    "target": "es2017",
-    "checkJs": false,
-    "experimentalDecorators": true
+    "target": "es6",
+    "module": "commonjs",
+    "noLib": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "rootDir": "./",
+    "paths": {
+      "~": ["./src"],
+      "~/*": ["./src/*"]
+    }
   },
   "exclude": [
     "node_modules"

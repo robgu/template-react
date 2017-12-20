@@ -17,6 +17,7 @@ module.exports = {
   },
   resolve: {
     alias: {
+      '~': path.resolve(__dirname, 'src'),
     },
   },
   module: {
@@ -54,7 +55,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({
-      title: 'react+redux demo',
+      title: 'template-react',
       template: path.resolve(__dirname, 'src/template.html'),
       inject: true,
     }),

@@ -1,5 +1,5 @@
 {
-  "name": "demo-react-redux",
+  "name": "template-react",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:tech-demo/react-redux.git"
+    "url": "git@github.com:tech-demo/template-react.git"
   },
   "keywords": [
     "react",
@@ -35,6 +35,7 @@
     "antd": "3.0.2",
     "axios": "0.17.1",
     "classnames": "2.2.5",
+    "debug": "^3.1.0",
     "jquery": "3.2.1",
     "lodash": "4.17.4",
     "moment": "2.20.1",
