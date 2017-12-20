@@ -51,6 +51,7 @@
         "max": 500
       }
     ],
+    "no-console": "error",
     "no-restricted-syntax": [
       "error",
       "WithStatement",

@@ -1,26 +1,43 @@
-import '~/app.less';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { Route } from 'react-router';
+import { ReduxRouter } from 'react-router-redux';
+import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
+import { createLogger } from 'redux-logger';
+import thunk from 'redux-thunk';
 
-import Engine from '~/engine';
-import React, { Component } from 'react';
+import Redux, { reducer as redux } from './Redux';
 
-export default class Main extends Component {
-  state = { isReady: false }
+const reducer = combineReducers({
+  redux,
+});
 
-  componentDidMount= async () => {
-    await Engine.init({
+const store = createStore(
+  reducer,
+  compose(
+    applyMiddleware(thunk),
+    applyMiddleware(createLogger({
+      predicate: () => {
+        return window.isDebuggingRemotely;
+      },
+    }))
+  )
+);
 
-    });
+const routes = (
+  <Provider store={store}>
+    <ReduxRouter >
+      <Route />
+    </ReduxRouter>
+  </Provider>
+);
 
-    this.setState({ isReady: true });
-  }
-
-  render = () => {
-    if (!this.state.isReady) {
-      return undefined;
-    }
-
-    return (
-      <div>Hello, template-react!!!!</div>
-    );
-  }
+if (module.hot) {
+  module.hot.accept(() => {
+    store.replaceReducer(reducer);
+  });
 }
+
+export {
+  routes,
+};
