@@ -31,6 +31,6 @@ export default class Main extends Component {
 }
 
 render(
-  React.createElement(require('./pages').default),
+  React.createElement(require('./pages').routes),
   document.getElementById('root'),
 );
