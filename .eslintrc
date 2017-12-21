@@ -29,6 +29,10 @@
       "error",
       "always-multiline"
     ],
+    "function-paren-newline": [
+      "error",
+      "consistent"
+    ],
     "import/first": "off",
     "import/no-unresolved": [
       "error",
@@ -58,6 +62,12 @@
       "BinaryExpression[operator='in']"
     ],
     "no-underscore-dangle": "off",
+    "object-curly-newline": [
+      "error",
+      {
+        "multiline": true
+      }
+    ],
     "react/jsx-filename-extension": "off",
     "react/prefer-stateless-function": "off",
     "react/sort-comp": [

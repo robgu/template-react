@@ -10,9 +10,7 @@ export default class Main extends Component {
 
   componentDidMount= async () => {
     try {
-      await Engine.init({
-
-      });
+      await Engine.init({});
 
       this.setState({ isReady: true });
     } catch (error) {
@@ -31,6 +29,6 @@ export default class Main extends Component {
 }
 
 render(
-  React.createElement(require('./pages').routes),
+  React.createElement(require('./pages').default),
   document.getElementById('root'),
 );
