@@ -32,7 +32,7 @@
   "license": "MIT",
   "dependencies": {
     "@antv/g2": "3.0.2",
-    "antd": "3.0.2",
+    "antd-mobile": "^2.1.2",
     "axios": "0.17.1",
     "classnames": "2.2.5",
     "debug": "^3.1.0",
