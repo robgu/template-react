@@ -56,7 +56,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'template-react',
       template: path.resolve(__dirname, 'src/template.html'),
-      inject: true,
+      filename: 'index.html',
     }),
   ],
 };
