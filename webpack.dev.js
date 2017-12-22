@@ -15,32 +15,31 @@ module.exports = {
     filename: 'bundle.js',
     chunkFilename: '[chunkhash].js',
   },
-  resolve: {
-    alias: {
-      '~': path.resolve(__dirname, 'src'),
-    },
-  },
+  resolve: { alias: { '~': path.resolve(__dirname, 'src') } },
   module: {
     rules: [{
       test: /\.(js)$/,
-      use: [{
-        loader: 'react-hot-loader/webpack',
-      }, {
-        loader: 'babel-loader',
-      }],
+      use: [
+        { loader: 'react-hot-loader/webpack' },
+        { loader: 'babel-loader' },
+      ],
       exclude: /node_modules/,
     }, {
       test: /\.(gif|png|jpe?g|svg)$/,
       loader: 'url-loader?limit=8192&name=static/images/[hash].[ext]',
     }, {
       test: /\.less$/,
-      use: [{
-        loader: 'style-loader',
-      }, {
-        loader: 'css-loader',
-      }, {
-        loader: 'less-loader',
-      }],
+      use: [
+        { loader: 'style-loader' },
+        { loader: 'css-loader' },
+        { loader: 'less-loader' },
+      ],
+    }, {
+      test: /\.css$/,
+      use: [
+        { loader: 'style-loader' },
+        { loader: 'css-loader' },
+      ],
     }],
   },
   plugins: [
