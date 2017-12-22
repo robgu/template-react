@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import Rest from './Rest';
+import Axios from './Axios';
 import Sessions from './Sessions';
 
 const debug = require('debug')('template-react/Engine');
@@ -26,7 +26,7 @@ export default class Engine {
     try {
       Engine.option = _.merge(defaultOption, option);
       await Sessions.init(option.params);
-      Rest.init();
+      Axios.init();
       if (option.onInitSuccess) {
         option.onInitSuccess();
       }

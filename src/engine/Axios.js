@@ -4,9 +4,9 @@ import _ from 'lodash';
 import Engine from './Engine';
 import Sessions from './Sessions';
 
-const debug = require('debug')('template-react/Rest');
+const debug = require('debug')('template-react/Axios');
 
-export default class Rest {
+export default class Axios {
   static init = () => {
     axios.interceptors.request.use((config) => {
       if (!config.ignoreLoading) {
@@ -23,7 +23,7 @@ export default class Rest {
       _.merge(config, { timeout: 60 * 1000, url, params });
 
       return config;
-    }, Rest.onError);
+    }, Axios.onError);
 
     axios.interceptors.response.use((response) => {
       const { config: { ignoreLoading } = {} } = response;
@@ -32,7 +32,7 @@ export default class Rest {
       }
 
       return response.data;
-    }, Rest.onError);
+    }, Axios.onError);
 
     axios.getPagedListRecursively = async (url, config = {}, allItems = []) => {
       const params = config.params || {};
