@@ -61,7 +61,7 @@ export default class Axios {
 
     switch (response.status) {
       case 401: {
-        Sessions.reLogin();
+        Sessions.clear();
         break;
       }
       case 400: {

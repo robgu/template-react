@@ -1,21 +1,31 @@
 import Engine from './Engine';
 
 export default class Sessions {
-  static option = {};
+  static _option = {};
   static _schema = {
     token: {},
     language: {},
   }
 
-  static init = (option) => {
-    Sessions.option = Sessions._restore(option);
+  static init = async (option) => {
+    Sessions._restoreOption(option);
+    await Sessions._restoreProfile();
+  }
+
+  static login = () => {
+    // TODO
+  }
+
+  static getToken = () => {
+    return Sessions._option.token || Sessions._option.temporaryToken;
   }
 
   static clear = () => {
-    Sessions.option.token = undefined;
+    Sessions._option.token = undefined;
+    Engine.logout();
   }
 
-  static _restore = (params) => {
+  static _restoreOption = (params) => {
     const option = { $data: {} };
     const config = {};
     for (const [key, op] of Object.entries(Sessions._schema)) {
@@ -34,6 +44,6 @@ export default class Sessions {
 
     Object.assign(option, config, params);
 
-    return option;
+    Sessions._option = option;
   }
 }

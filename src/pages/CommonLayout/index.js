@@ -1,13 +1,14 @@
 import './index.less';
 
+import { siderMenuWidth } from '~/consts';
+import { connect } from '~/plugins';
 import { Breadcrumb, Icon, Layout, Menu } from 'antd';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { routerActions } from 'react-router-redux';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
 @connect(
@@ -16,10 +17,17 @@ const { SubMenu } = Menu;
 export default class CommonLayout extends Component {
   static propTypes = {
     routes: PropTypes.object.isRequired,
+    location: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
+    i18n: PropTypes.func.isRequired,
   }
 
-  state = { collapsed: false };
+  constructor(props) {
+    super(props);
+    this.state = {
+      collapsed: false,
+    };
+  }
 
   getMenuAndRoutes = () => {
     const menus = [];
@@ -28,7 +36,7 @@ export default class CommonLayout extends Component {
       if (item.component) {
         menus.push(
           <Menu.Item key={key}>
-            {this.renderMenuItemContent(item.iconType, item.title)}
+            {this.renderMenuItemContent(item.iconType, key)}
           </Menu.Item>
         );
         routes.push(
@@ -39,7 +47,7 @@ export default class CommonLayout extends Component {
         for (const [subKey, subItem] of Object.entries(item.items)) {
           subMenus.push(
             <Menu.Item key={key + subKey}>
-              {this.renderMenuItemContent(subItem.iconType, subItem.title)}
+              {this.renderMenuItemContent(subItem.iconType, key + subKey)}
             </Menu.Item>
           );
           routes.push(
@@ -47,22 +55,36 @@ export default class CommonLayout extends Component {
           );
         }
         menus.push(
-          <SubMenu key={key} title={this.renderMenuItemContent(item.iconType, item.title)}>
+          <SubMenu key={key} title={this.renderMenuItemContent(item.iconType, key)}>
             {subMenus}
           </SubMenu>
         );
       }
     }
 
-    routes.push(
-      <Redirect key="index" to="/" />
-    );
-
     return { menus, routes };
   }
 
-  onCollapse = (collapsed) => {
-    this.setState({ collapsed });
+  getBreadCrumb = () => {
+    const pathSnippets = this.props.location.pathname.split('/').filter((i) => { return i; });
+    const extraBreadcrumbItems = pathSnippets.map((_, index) => {
+      const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
+      return (
+        <Breadcrumb.Item key={url}>
+          {this.props.i18n('router', 'title', url)}
+        </Breadcrumb.Item>
+      );
+    });
+    extraBreadcrumbItems.unshift(
+      <Breadcrumb.Item key="home">
+        {this.props.i18n('router', 'title', 'home')}
+      </Breadcrumb.Item>
+    );
+    return extraBreadcrumbItems;
+  }
+
+  onCollapse = () => {
+    this.setState({ collapsed: !this.state.collapsed });
   }
 
   onSelectMenu = (item) => {
@@ -72,37 +94,46 @@ export default class CommonLayout extends Component {
   renderMenuItemContent = (iconType, title) => {
     return [
       <Icon key="1" type={iconType} />,
-      <input type="button" value={title} key="2" />,
+      <input type="button" value={this.props.i18n('router', 'title', title)} key="2" />,
     ];
   }
 
   render = () => {
     const { menus, routes } = this.getMenuAndRoutes();
+    this.getBreadCrumb();
     return (
-      <Layout style={{ minHeight: '100vh' }}>
+      <Layout className="common-layout">
         <Sider
           collapsible
+          width={siderMenuWidth}
+          trigger={null}
+          breakpoint="md"
           collapsed={this.state.collapsed}
           onCollapse={this.onCollapse}
         >
-          <div className="logo" />
-          <Menu onSelect={this.onSelectMenu} theme="dark" defaultSelectedKeys={['1']} mode="inline">
+          <div className="logo-container">
+            <img alt="" src="/static/logo.svg" />
+            <h1>{this.props.i18n('router', 'title', 'appName')}</h1>
+          </div>
+          <Menu
+            onSelect={this.onSelectMenu}
+            theme="dark"
+            mode="inline"
+          >
             {menus}
           </Menu>
         </Sider>
-        <Layout>
-          <Header style={{ background: '#fff', padding: 0 }} />
-          <Content style={{ margin: '0 16px' }}>
+        <Layout className="layout-content">
+          <Content className="page-container">
             <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
+              {this.getBreadCrumb()}
             </Breadcrumb>
             <Switch>
               {routes}
             </Switch>
           </Content>
           <Footer style={{ textAlign: 'center' }}>
-                Ant Design ©2016 Created by Ant UED
+            Ant Design ©2016 Created by Ant UED
           </Footer>
         </Layout>
       </Layout>

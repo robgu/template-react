@@ -30,7 +30,7 @@ read msg < .git/COMMIT_EDITMSG
 
 max_length=100
 length=${#msg}
-pattern='^[A-Za-z0-9]*: .*$'
+pattern='^[A-Za-z0-9\-\/]*: .*$'
 
 if [[ $msg =~ $pattern ]]; then
     if [[ $length -gt $max_length ]]; then

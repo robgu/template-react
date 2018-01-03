@@ -9,6 +9,7 @@ const { error } = console;
 
 const defaultOption = {
   onLogin: () => { error('onLogin is required'); },
+  onLogout: () => { error('onLogout is required'); },
   i18n: () => { error('i18n is required'); },
   showToast: () => { error('showToast is required'); },
   showLoading: () => { error('showLoading is required'); },
@@ -22,16 +23,18 @@ const defaultOption = {
 };
 
 export default class Engine {
+  static _option = {}
+
   static init = async (option) => {
     try {
-      Engine.option = _.merge(defaultOption, option);
-      await Sessions.init(option.params);
+      Engine._option = _.merge(defaultOption, option);
       Axios.init();
+      await Sessions.init(option.params);
       if (option.onInitSuccess) {
         option.onInitSuccess();
       }
     } catch (err) {
-      debug.log(err);
+      debug(err);
       if (option.onInitFailure) {
         option.onInitFailure(err);
       }
@@ -39,38 +42,46 @@ export default class Engine {
   }
 
   static login = async () => {
-    await Engine.option.onLogin();
+    await Engine._option.onLogin();
+  }
+
+  static logout = async () => {
+    await Engine._option.onLogout();
+  }
+
+  static getApiEndpoint = () => {
+    return Engine._option.apiEndpoint;
   }
 
   static i18n = (key, ...args) => {
-    return Engine.option.i18n(key, args);
+    return Engine._option.i18n(key, args);
   }
 
   static showToast = (options) => {
-    Engine.option.showToast(options);
+    Engine._option.showToast(options);
   }
 
   static showLoading = () => {
-    Engine.option.showLoading();
+    Engine._option.showLoading();
   }
 
   static hideLoading = () => {
-    Engine.option.hideLoading();
+    Engine._option.hideLoading();
   }
 
   static getItem = (key, { isTemporary } = {}) => {
-    return Engine.option.storage.getItem(key, isTemporary);
+    return Engine._option.storage.getItem(key, isTemporary);
   }
 
   static setItem = (key, value, { isTemporary } = {}) => {
-    return Engine.option.storage.setItem(key, value, isTemporary);
+    return Engine._option.storage.setItem(key, value, isTemporary);
   }
 
   static removeItem = (key, { isTemporary } = {}) => {
-    return Engine.option.storage.removeItem(key, isTemporary);
+    return Engine._option.storage.removeItem(key, isTemporary);
   }
 
   static clear = ({ isTemporary } = {}) => {
-    return Engine.option.storage.clear(isTemporary);
+    return Engine._option.storage.clear(isTemporary);
   }
 }

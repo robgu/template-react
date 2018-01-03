@@ -11,6 +11,11 @@ const extractLess = new ExtractTextPlugin({
   disable: false,
 });
 
+const {
+  BACKEND_PROTOCOL = 'http',
+  BACKEND_DOMAIN = '', // TODO
+} = process.env;
+
 module.exports = {
   devtool: 'sourcemap',
   stats: { children: false },
@@ -33,9 +38,27 @@ module.exports = {
       test: /\.(gif|png|jpe?g|svg)$/,
       loader: 'url-loader?limit=8192&name=static/images/[hash].[ext]',
     }, {
+      test: /\.css$/,
+      use: extractLess.extract({
+        use: { loader: 'css-loader' },
+        // use style-loader in development
+        fallback: 'style-loader',
+      }),
+    }, {
       test: /\.less$/,
       use: extractLess.extract({
-        use: [{ loader: 'css-loader' }, { loader: 'less-loader' }],
+        use: [
+          { loader: 'css-loader' },
+          {
+            loader: 'less-loader',
+            options: {
+              paths: [
+                path.resolve(__dirname, 'node_modules'),
+                path.resolve(__dirname, 'src'),
+              ],
+            },
+          },
+        ],
         // use style-loader in development
         fallback: 'style-loader',
       }),
@@ -54,11 +77,13 @@ module.exports = {
       'process.env': {
         // This can reduce react lib size and disable some dev feactures like props validation
         NODE_ENV: JSON.stringify('production'),
+        BACKEND_PROTOCOL: JSON.stringify(BACKEND_PROTOCOL),
+        BACKEND_DOMAIN: JSON.stringify(BACKEND_DOMAIN),
       },
     }),
     new webpack.optimize.UglifyJsPlugin({
       minimize: true,
-      sourceMap: true,
+      sourceMap: false,
       compressor: { warnings: false },
     }),
     new ExtractTextPlugin('app.min.css'),

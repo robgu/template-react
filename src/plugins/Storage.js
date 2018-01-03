@@ -2,8 +2,8 @@
 const debug = require('debug')('template-react/Storage');
 
 export default class Storage {
-  constructor(props) {
-    this.scope = props.scope;
+  constructor({ scope = '' } = {}) {
+    this.scope = scope;
   }
 
   getItem = (key, isTemporary) => {
