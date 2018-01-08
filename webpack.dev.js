@@ -2,25 +2,35 @@ const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
+const extractLess = new ExtractTextPlugin({
+  filename: '[name].[contenthash].css',
+  disable: false,
+});
+
+const {
+  BACKEND_PROTOCOL = 'http',
+  BACKEND_DOMAIN = '', // TODO
+} = process.env;
 
 module.exports = {
   devtool: 'sourcemap',
-  entry: [
-    'webpack-dev-server/client?http://localhost:8080', // WebpackDevServer host and port
-    'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
-    path.resolve(__dirname, 'src/index.js'),
-  ],
+  stats: { children: false },
+  entry: { app: path.resolve(__dirname, 'src/index.js') },
   output: {
+    path: path.resolve(__dirname, 'build'),
     publicPath: '/',
-    filename: 'bundle.js',
+    filename: '[name].[chunkhash].js',
     chunkFilename: '[chunkhash].js',
   },
   resolve: { alias: { '~': path.resolve(__dirname, 'src') } },
   module: {
     rules: [{
-      test: /\.(js)$/,
+      test: /\.js$/,
       use: [
-        { loader: 'react-hot-loader/webpack' },
         { loader: 'babel-loader' },
       ],
       exclude: /node_modules/,
@@ -28,35 +38,63 @@ module.exports = {
       test: /\.(gif|png|jpe?g|svg)$/,
       loader: 'url-loader?limit=8192&name=static/images/[hash].[ext]',
     }, {
-      test: /\.less$/,
-      use: [
-        { loader: 'style-loader' },
-        { loader: 'css-loader' },
-        { loader: 'less-loader' },
-      ],
-    }, {
       test: /\.css$/,
-      use: [
-        { loader: 'style-loader' },
-        { loader: 'css-loader' },
-      ],
+      use: extractLess.extract({
+        use: { loader: 'css-loader' },
+        // use style-loader in development
+        fallback: 'style-loader',
+      }),
+    }, {
+      test: /\.less$/,
+      use: extractLess.extract({
+        use: [
+          { loader: 'css-loader' },
+          {
+            loader: 'less-loader',
+            options: {
+              paths: [
+                path.resolve(__dirname, 'node_modules'),
+                path.resolve(__dirname, 'src'),
+              ],
+            },
+          },
+        ],
+        // use style-loader in development
+        fallback: 'style-loader',
+      }),
     }],
   },
   plugins: [
+    new CleanWebpackPlugin(['build']),
     new webpack.LoaderOptionsPlugin({
       options: {
         postcss() {
           autoprefixer({ browsers: ['> 0.04%'] });
         },
-        debug: true,
       },
     }),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        // This can reduce react lib size and disable some dev feactures like props validation
+        NODE_ENV: JSON.stringify('production'),
+        ENV: JSON.stringify('development'),
+        BACKEND_PROTOCOL: JSON.stringify(BACKEND_PROTOCOL),
+        BACKEND_DOMAIN: JSON.stringify(BACKEND_DOMAIN),
+      },
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      minimize: true,
+      sourceMap: true,
+      compressor: { warnings: false },
+    }),
+    new ExtractTextPlugin('app.min.css'),
+    new CopyWebpackPlugin([
+      { from: 'static', to: 'static' },
+    ]),
     new HtmlWebpackPlugin({
       title: 'template-react',
-      template: path.resolve(__dirname, 'src/template.html'),
       filename: 'index.html',
+      template: path.resolve(__dirname, 'src/template.html'),
     }),
   ],
 };
