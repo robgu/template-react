@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run link-files && webpack-dev-server --progress --profile --config webpack.local.js",
-    "build": "webpack --progress --display-modules --profile --config webpack.${ENV-dev}.js",
+    "build": "webpack --progress --profile --config webpack.${ENV-dev}.js",
     "fix-lint": "npm run fix-js-lint && npm run fix-less-lint",
     "fix-js-lint": "git diff --name-only --cached | egrep '.js$' | xargs eslint --fix || true",
     "fix-less-lint": "git diff --name-only --cached | egrep '.less$' | xargs stylelint --fix || true",

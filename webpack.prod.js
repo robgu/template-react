@@ -77,6 +77,7 @@ module.exports = {
       'process.env': {
         // This can reduce react lib size and disable some dev feactures like props validation
         NODE_ENV: JSON.stringify('production'),
+        ENV: JSON.stringify('production'),
         BACKEND_PROTOCOL: JSON.stringify(BACKEND_PROTOCOL),
         BACKEND_DOMAIN: JSON.stringify(BACKEND_DOMAIN),
       },
