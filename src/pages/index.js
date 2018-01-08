@@ -21,7 +21,12 @@ const store = createStore(
   compose(
     applyMiddleware(thunk),
     applyMiddleware(routerMiddleware(history)),
-    applyMiddleware(createLogger())
+    applyMiddleware(createLogger({
+      predicate: () => {
+        // eslint-disable-next-line
+        return process.env.ENV !== 'production' || localStorage.debug;
+      },
+    }))
   )
 );
 

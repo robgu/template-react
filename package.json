@@ -4,8 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --progress --profile --config webpack.dev.js",
-    "build": "webpack --progress --display-modules --profile --config webpack.prod.js"
+    "start": "npm run link-files && webpack-dev-server --progress --profile --config webpack.local.js",
+    "build": "webpack --progress --profile --config webpack.${ENV-prod}.js",
+    "fix-lint": "npm run fix-js-lint && npm run fix-less-lint",
+    "fix-js-lint": "git diff --name-only --cached | egrep '.js$' | xargs eslint --fix || true",
+    "fix-less-lint": "git diff --name-only --cached | egrep '.less$' | xargs stylelint --fix || true",
+    "link-files": "ln -sf `pwd`/scripts/commit-msg .git/hooks/commit-msg && ln -sf `pwd`/scripts/pre-commit .git/hooks/pre-commit"
   },
   "repository": {
     "type": "git",
