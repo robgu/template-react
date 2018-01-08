@@ -11,8 +11,7 @@
   "files.associations": {
     ".stylelintrc": "json"
   },
-  "files.autoSave": "afterDelay",
-  "files.autoSaveDelay": 5000,
+  "files.autoSave": "onWindowChange",
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
