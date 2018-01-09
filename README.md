@@ -1,6 +1,8 @@
-# Training
+# [Training](./docs/training.md)
 
-# Code Style
+# [Code Style](./docs/code-style.md)
+
+# [Contributing](./docs/get-start.md)
 
 # Development
 > 启动 dev server
@@ -49,8 +51,3 @@ npm run build
 - 依赖找不到, 需要运行 `npm install`. 建议每次 build 前运行 `npm install`.
 
 # Maintenance
-
-# References
-- http://lesscss.org/#getting-started
-- https://github.com/facebook/react
-- https://github.com/ant-design/ant-design
