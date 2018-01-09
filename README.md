@@ -1,3 +1,14 @@
+# Setup Guide
+> install node (版本参考 package.json -> engines -> node)
+-
+
+> install git
+- [key-questions](https://github.com/inetfuture/technote/blob/master/git.md#key-questions)
+
+> install vscode
+
+> install vscode extension
+
 # [Training](./docs/training.md)
 
 # [Code Style](./docs/code-style.md)

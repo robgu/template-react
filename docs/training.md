@@ -1,10 +1,4 @@
-# Setup Guide
-
-- install node (具体版本需要找项目负责人确定)
-- install git   [key-questions](https://github.com/inetfuture/technote/blob/master/git.md#key-questions)
-- install vscode
-
-# Training Step 1
+# Step 1
 ## Summary
 - 学习JS和es6语法
 - 学习和掌握react语法
@@ -17,7 +11,7 @@
 - [chrome-devtools](https://developers.google.com/web/tools/chrome-devtools/?hl=en)
 - [ES7](https://pouchdb.com/2015/03/05/taming-the-async-beast-with-es7.html)
 
-# Training Step 2
+# Step 2
 ## Summary
 - 学习并掌握 redux
 - 学习并掌握 moment
@@ -28,7 +22,7 @@
 - [moment](http://momentjs.cn/docs/)
 - [lodash](https://lodash.com/docs)
 
-# Training Step 3
+# Step 3
 ## Summary
 - 参照项目的 eslint 配置, 规范 Code Style
 
