@@ -1,10 +1,10 @@
 import './index.less';
 
 import { siderMenuWidth } from '~/consts';
-import { connect } from '~/plugins';
 import { Breadcrumb, Icon, Layout, Menu } from 'antd';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import { routerActions } from 'react-router-redux';
 
@@ -18,8 +18,6 @@ export default class CommonLayout extends Component {
   static propTypes = {
     routes: PropTypes.object.isRequired,
     location: PropTypes.object,
-    dispatch: PropTypes.func.isRequired,
-    i18n: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -71,13 +69,13 @@ export default class CommonLayout extends Component {
       const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
       return (
         <Breadcrumb.Item key={url}>
-          {this.props.i18n('router', 'title', url)}
+          {this.$i18n(`router.title[${url}]`)}
         </Breadcrumb.Item>
       );
     });
     extraBreadcrumbItems.unshift(
       <Breadcrumb.Item key="home">
-        {this.props.i18n('router', 'title', 'home')}
+        {this.$i18n('router.title.home')}
       </Breadcrumb.Item>
     );
     return extraBreadcrumbItems;
@@ -88,13 +86,13 @@ export default class CommonLayout extends Component {
   }
 
   onSelectMenu = (item) => {
-    this.props.dispatch(routerActions.replace(item.key));
+    this.$dispatch(routerActions.replace(item.key));
   }
 
   renderMenuItemContent = (iconType, title) => {
     return [
       <Icon key="1" type={iconType} />,
-      <input type="button" value={this.props.i18n('router', 'title', title)} key="2" />,
+      <input type="button" value={this.$i18n(`router.title[${title}]`)} key="2" />,
     ];
   }
 
@@ -113,7 +111,7 @@ export default class CommonLayout extends Component {
         >
           <div className="logo-container">
             <img alt="" src="/static/logo.svg" />
-            <h1>{this.props.i18n('router', 'title', 'appName')}</h1>
+            <h1>{this.$i18n('router.title.appName')}</h1>
           </div>
           <Menu
             onSelect={this.onSelectMenu}

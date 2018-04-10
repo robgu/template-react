@@ -1,15 +1,13 @@
-const autoprefixer = require('autoprefixer');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+const autoprefixer = require('autoprefixer');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
-const extractLess = new ExtractTextPlugin({
-  filename: '[name].[contenthash].css',
-  disable: false,
-});
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const webpack = require('webpack');
 
 const {
   BACKEND_PROTOCOL = 'http',
@@ -17,6 +15,7 @@ const {
 } = process.env;
 
 module.exports = {
+  mode: 'production',
   devtool: 'sourcemap',
   stats: { children: false },
   entry: { app: path.resolve(__dirname, 'src/index.js') },
@@ -27,9 +26,47 @@ module.exports = {
     chunkFilename: '[chunkhash].js',
   },
   resolve: { alias: { '~': path.resolve(__dirname, 'src') } },
+  optimization: {
+    runtimeChunk: {
+      name: 'manifest',
+    },
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: false,
+      }),
+      new OptimizeCSSAssetsPlugin({}),
+    ],
+    splitChunks: {
+      chunks: 'async',
+      minSize: 30000,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      name: false,
+      cacheGroups: {
+        vendor: {
+          name: 'vendor',
+          chunks: 'initial',
+          priority: -10,
+          reuseExistingChunk: false,
+          test: /node_modules\/(.*)\.js/,
+        },
+        styles: {
+          name: 'styles',
+          test: /\.(scss|css)$/,
+          chunks: 'all',
+          minChunks: 1,
+          reuseExistingChunk: true,
+          enforce: true,
+        },
+      },
+    },
+  },
   module: {
     rules: [{
-      test: /\.(js|jsx)$/,
+      test: /\.js$/,
       use: [
         { loader: 'babel-loader' },
       ],
@@ -39,29 +76,30 @@ module.exports = {
       loader: 'url-loader?limit=8192&name=static/images/[hash].[ext]',
     }, {
       test: /\.css$/,
-      use: extractLess.extract({
-        use: { loader: 'css-loader' },
-        // use style-loader in development
-        fallback: 'style-loader',
-      }),
+      use: [
+        MiniCssExtractPlugin.loader,
+        'css-loader',
+      ],
     }, {
       test: /\.less$/,
-      use: extractLess.extract({
-        use: [
-          { loader: 'css-loader' },
-          {
-            loader: 'less-loader',
-            options: {
-              paths: [
-                path.resolve(__dirname, 'node_modules'),
-                path.resolve(__dirname, 'src'),
-              ],
-            },
-          },
-        ],
-        // use style-loader in development
-        fallback: 'style-loader',
-      }),
+      use: [{
+        loader: 'style-loader',
+      }, {
+        loader: 'css-loader',
+        options: {
+          sourceMap: false,
+        },
+      }, {
+        loader: 'less-loader',
+        options: {
+          sourceMap: false,
+          javascriptEnabled: true,
+          paths: [
+            path.resolve(__dirname, 'node_modules'),
+            path.resolve(__dirname, 'src'),
+          ],
+        },
+      }],
     }],
   },
   plugins: [
@@ -77,17 +115,12 @@ module.exports = {
       'process.env': {
         // This can reduce react lib size and disable some dev feactures like props validation
         NODE_ENV: JSON.stringify('production'),
-        ENV: JSON.stringify('production'),
+        ENV: JSON.stringify('development'),
         BACKEND_PROTOCOL: JSON.stringify(BACKEND_PROTOCOL),
         BACKEND_DOMAIN: JSON.stringify(BACKEND_DOMAIN),
       },
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      minimize: true,
-      sourceMap: false,
-      compressor: { warnings: false },
-    }),
-    new ExtractTextPlugin('app.min.css'),
+    new MiniCssExtractPlugin({ filename: 'app.min.css' }),
     new CopyWebpackPlugin([
       { from: 'static', to: 'static' },
     ]),

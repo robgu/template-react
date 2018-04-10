@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { Component } from 'react';
-import * as redux from 'react-redux';
 import { routerActions } from 'react-router-redux';
 import * as pagan from 'redux-pagan';
 
@@ -59,6 +58,10 @@ Component.prototype.$i18n = function (path, ...args) {
   return value;
 };
 
+Component.prototype.$dispatch = (...args) => {
+  store.dispatch(...args);
+};
+
 Component.prototype.$push = (...keys) => {
   return store.dispatch(routerActions.push(...keys));
 };
@@ -67,18 +70,4 @@ Component.prototype.$replace = (...keys) => {
   return store.dispatch(routerActions.replace(...keys));
 };
 
-export const connect = (...args) => {
-  const getProps = args.shift(0, 1);
-
-  args.unshift((...params) => {
-    const props = (getProps ? getProps(...params) : {}) || {};
-    props.dispatch = store.dispatch;
-    return props;
-  });
-
-  return redux.connect(...args);
-};
-
 export const i18n = Component.prototype.$i18n;
-
-export default connect;

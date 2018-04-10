@@ -10,6 +10,7 @@ const {
 } = process.env;
 
 module.exports = {
+  mode: 'development',
   devServer: {
     host: '::',
     port: PORT,
@@ -30,11 +31,13 @@ module.exports = {
       '~': path.resolve(__dirname, 'src'),
     },
   },
+  optimization: {
+    noEmitOnErrors: true,
+  },
   module: {
     rules: [{
       test: /\.js$/,
       use: [
-        { loader: 'react-hot-loader/webpack' },
         { loader: 'babel-loader' },
       ],
       exclude: /node_modules/,
@@ -49,19 +52,24 @@ module.exports = {
       ],
     }, {
       test: /\.less$/,
-      use: [
-        { loader: 'style-loader' },
-        { loader: 'css-loader' },
-        {
-          loader: 'less-loader',
-          options: {
-            paths: [
-              path.resolve(__dirname, 'node_modules'),
-              path.resolve(__dirname, 'src'),
-            ],
-          },
+      use: [{
+        loader: 'style-loader',
+      }, {
+        loader: 'css-loader',
+        options: {
+          sourceMap: true,
         },
-      ],
+      }, {
+        loader: 'less-loader',
+        options: {
+          sourceMap: true,
+          javascriptEnabled: true,
+          paths: [
+            path.resolve(__dirname, 'node_modules'),
+            path.resolve(__dirname, 'src'),
+          ],
+        },
+      }],
     }],
   },
   plugins: [
@@ -80,7 +88,6 @@ module.exports = {
       },
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({
       title: 'template-react',
       template: path.resolve(__dirname, 'src/template.html'),

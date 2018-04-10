@@ -52,21 +52,21 @@ const routes = {
     title: 'Rest Demo',
     component: Rest,
   },
-  '/group1': {
+  '/group': {
     iconType: 'pie-chart',
-    title: 'Group1',
+    title: 'group',
     items: {
       '/redux': {
         iconType: 'pie-chart',
         component: Redux,
         title: 'Redux Demo',
-        group: 'group1',
+        group: 'group',
       },
       '/rest': {
         iconType: 'desktop',
         component: Rest,
         title: 'Rest Demo',
-        group: 'group1',
+        group: 'group',
       },
     },
   },
