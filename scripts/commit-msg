@@ -20,7 +20,7 @@ function showErrorMsg() {
     elif [[ $2 -eq $end_with_dot_exception ]]; then
         echo -e $error_header'the subject should not end with dot(.)! was:' $3
     else
-        echo -e $error_header'does not match "<scope>: <subject>" format!'
+        echo -e $error_header'does not match "'$pattern'" format!'
     fi
 
     is_valid=false
@@ -30,7 +30,7 @@ read msg < .git/COMMIT_EDITMSG
 
 max_length=100
 length=${#msg}
-pattern='^[A-Za-z0-9\-\/]*: .*$'
+pattern='^(hotfix|fix|refactor|feat)\(?[a-zA-Z0-9\-]*\)?: .*( #\d+)?$'
 
 if [[ $msg =~ $pattern ]]; then
     if [[ $length -gt $max_length ]]; then
